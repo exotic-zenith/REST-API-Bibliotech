@@ -1,21 +1,35 @@
 const statusEl = document.getElementById("status");
 const booksOutput = document.getElementById("books-output");
-const tokenInput = document.getElementById("token");
+const TOKEN_KEY = "bibliotech_jwt";
 
 function setStatus(message, isError = false) {
     statusEl.textContent = message;
     statusEl.style.color = isError ? "#b91c1c" : "#166534";
 }
 
+function getToken() {
+    return localStorage.getItem(TOKEN_KEY);
+}
+
+function redirectToLogin() {
+    window.location.replace("/login.html");
+}
+
 function authHeaders() {
-    const token = tokenInput.value.trim();
-    if (!token) {
-        return { "Content-Type": "application/json" };
-    }
+    const token = getToken();
     return {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`
     };
+}
+
+function handleUnauthorized(response) {
+    if (response.status === 401 || response.status === 403) {
+        localStorage.removeItem(TOKEN_KEY);
+        redirectToLogin();
+        return true;
+    }
+    return false;
 }
 
 async function loadBooks() {
@@ -34,31 +48,6 @@ async function loadBooks() {
         }).join("\n");
     } catch (error) {
         setStatus("Erreur lors du chargement des livres.", true);
-    }
-}
-
-async function loginAdmin(event) {
-    event.preventDefault();
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value;
-
-    try {
-        const response = await fetch("/api/v1/auth/token", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, password })
-        });
-
-        if (!response.ok) {
-            setStatus("Echec de connexion admin.", true);
-            return;
-        }
-
-        const data = await response.json();
-        tokenInput.value = data.token || "";
-        setStatus("Token JWT genere avec succes.");
-    } catch (error) {
-        setStatus("Impossible de generer le token.", true);
     }
 }
 
@@ -90,9 +79,13 @@ async function createBook(event) {
             body: JSON.stringify(payload)
         });
 
+        if (handleUnauthorized(response)) {
+            return;
+        }
+
         if (!response.ok) {
             const err = await response.json().catch(() => null);
-            setStatus(err?.message || "Creation echouee (verifiez le token admin / donnees).", true);
+            setStatus(err?.message || "Creation echouee.", true);
             return;
         }
 
@@ -115,9 +108,13 @@ async function deleteBook(event) {
             headers: authHeaders()
         });
 
+        if (handleUnauthorized(response)) {
+            return;
+        }
+
         if (!response.ok) {
             const err = await response.json().catch(() => null);
-            setStatus(err?.message || "Suppression echouee (verifiez token admin / ID).", true);
+            setStatus(err?.message || "Suppression echouee.", true);
             return;
         }
 
@@ -129,10 +126,17 @@ async function deleteBook(event) {
     }
 }
 
-document.getElementById("login-form").addEventListener("submit", loginAdmin);
-document.getElementById("refresh-books").addEventListener("click", loadBooks);
-document.getElementById("create-book-form").addEventListener("submit", createBook);
-document.getElementById("delete-book-form").addEventListener("submit", deleteBook);
+function logout() {
+    localStorage.removeItem(TOKEN_KEY);
+    redirectToLogin();
+}
 
-loadBooks();
-
+if (!getToken()) {
+    redirectToLogin();
+} else {
+    document.getElementById("refresh-books").addEventListener("click", loadBooks);
+    document.getElementById("create-book-form").addEventListener("submit", createBook);
+    document.getElementById("delete-book-form").addEventListener("submit", deleteBook);
+    document.getElementById("logout-btn").addEventListener("click", logout);
+    loadBooks();
+}

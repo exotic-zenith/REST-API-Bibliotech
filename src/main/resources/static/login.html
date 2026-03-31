@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BiblioTech - Login</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<main class="container narrow">
+    <h1>BiblioTech - Connexion</h1>
+
+    <section class="card">
+        <h2>Authentification ADMIN</h2>
+        <form id="login-form">
+            <label>Username
+                <input id="username" type="text" value="admin" required>
+            </label>
+            <label>Password
+                <input id="password" type="password" value="admin123" required>
+            </label>
+            <button type="submit">Se connecter</button>
+        </form>
+    </section>
+
+    <p id="status" class="status"></p>
+</main>
+<script src="/login.js"></script>
+</body>
+</html>
+

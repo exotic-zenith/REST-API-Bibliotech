@@ -23,14 +23,16 @@ API REST Spring Boot 3 pour la gestion d'une bibliotheque, avec:
 ```
 
 ## Interface simple (web)
-Une interface minimale est disponible ici:
-- `http://localhost:8080/`
+Flux en 2 pages:
+- `http://localhost:8080/` -> redirection automatique
+- `http://localhost:8080/login.html` -> page de connexion
+- `http://localhost:8080/manage.html` -> gestion BiblioTech
 
-Depuis cette page vous pouvez:
+Depuis l'interface de gestion vous pouvez:
 - lister les livres
-- generer/coller un token JWT admin
 - ajouter un livre
 - supprimer un livre
+- vous deconnecter
 
 ## Obtenir un token JWT
 ```powershell

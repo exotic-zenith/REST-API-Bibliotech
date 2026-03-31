@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BiblioTech - Management</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<main class="container">
+    <div class="topbar">
+        <h1>BiblioTech - Management</h1>
+        <button id="logout-btn" type="button" class="danger">Deconnexion</button>
+    </div>
+
+    <section class="card">
+        <h2>Livres disponibles</h2>
+        <button id="refresh-books" type="button">Rafraichir</button>
+        <div id="books-output" class="list"></div>
+    </section>
+
+    <section class="card">
+        <h2>Ajouter un livre (ADMIN)</h2>
+        <form id="create-book-form">
+            <label>ISBN
+                <input id="isbn" type="text" required>
+            </label>
+            <label>Titre
+                <input id="title" type="text" required>
+            </label>
+            <label>Stock disponible
+                <input id="stock" type="number" min="0" value="1" required>
+            </label>
+            <label>Auteur (optionnel)
+                <input id="author" type="text">
+            </label>
+            <label>Categories (optionnel, separees par des virgules)
+                <input id="categories" type="text" placeholder="Roman, Classique">
+            </label>
+            <button type="submit">Ajouter</button>
+        </form>
+    </section>
+
+    <section class="card">
+        <h2>Supprimer un livre (ADMIN)</h2>
+        <form id="delete-book-form">
+            <label>ID du livre
+                <input id="delete-id" type="number" min="1" required>
+            </label>
+            <button type="submit" class="danger">Supprimer</button>
+        </form>
+    </section>
+
+    <p id="status" class="status"></p>
+</main>
+<script src="/app.js"></script>
+</body>
+</html>
+
