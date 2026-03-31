@@ -66,6 +66,7 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationProvider(provider)
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/", "/index.html", "/app.js", "/styles.css", "/favicon.ico").permitAll()
                 .requestMatchers("/api/v1/auth/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v1/books/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v1/books").hasRole("ADMIN")
